@@ -22,6 +22,7 @@ exports.authorization = async (req, res, next) => {
     return next()
 }
 
+
 exports.checkisManager = (req, res, next) => {
     if (req.user.role !== "manager") {
         return res.status(401).json({ message: "Restricted to Manager" })

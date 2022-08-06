@@ -15,7 +15,7 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Todo List Application' })
+    res.json({ message: 'Authorization Application' })
 });
 
 require('./routes/users/user.router')(app);
