@@ -29,13 +29,13 @@ exports.checkisManager = (req, res, next) => {
     return next()
 }
 exports.checkisAdmin = (req, res, next) => {
-    if (req.user.userRole !== "admin") {
+    if (req.user.role !== "admin") {
         return res.status(401).json({ message: "Restricted to admin" })
     }
     return next()
 }
 exports.checkisStaff = (req, res, next) => {
-    if (req.user.userRole !== "staff") {
+    if (req.user.role !== "staff") {
         return res.status(401).json({ message: "Restricted to Staff" })
     }
     return next()
