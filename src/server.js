@@ -1,17 +1,13 @@
 const express = require('express')
 const cors = require('cors')
 const auth = require("./middlewares/auth")
+require("dotenv").config()
 
 
 const app = express()
 
 
-app.use(cors({
-    origin: 'http://localhost:3000',
-}));
-
-
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT
 
 require('./config/mongo')
 

@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()
 const { SECRET_KEY } = process.env
 
-module.exports = async (req, res, next) => {
-    const token = await req.query.token || req.headers("x-access-token");
+exports.authorization = async (req, res, next) => {
+    const token = await req.query.token || req.header("x-access-token") || req.header("x-authorization")
 
     if (!token) {
         return res.status(401).json({
@@ -19,5 +19,24 @@ module.exports = async (req, res, next) => {
         return res.status(401).json({ message: "Invalid token" })
     }
 
+    return next()
+}
+
+exports.checkisManager = (req, res, next) => {
+    if (req.user.role !== "manager") {
+        return res.status(401).json({ message: "Restricted to Manager" })
+    }
+    return next()
+}
+exports.checkisAdmin = (req, res, next) => {
+    if (req.user.userRole !== "admin") {
+        return res.status(401).json({ message: "Restricted to admin" })
+    }
+    return next()
+}
+exports.checkisStaff = (req, res, next) => {
+    if (req.user.userRole !== "staff") {
+        return res.status(401).json({ message: "Restricted to Staff" })
+    }
     return next()
 }

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
 
-const CONNECTION_URL = 'mongodb://localhost:27017/usersdb';
+const CONNECTION_URL = process.env.MONGO_URI;
 
 
 mongoose.connect(CONNECTION_URL, {

@@ -10,7 +10,18 @@ const { SECRET_KEY } = process.env
 
 exports.signup = async (req, res) => {
     try {
+
         const { firstName, lastName, email, password, userRole } = req.body;
+        if (!firstName || !lastName || !email || !password) {
+            return res.status(400).json({ err: "Content cannot be empty" })
+        }
+
+        const existingUser = await usermodel.findOne({ email: email })
+        if (existingUser) {
+            return res.status(400).json({
+                error: "Email already in use"
+            })
+        }
         const hashPassword = await bcrypt.hash(password, 10);
         const user = await usermodel.signup(firstName, lastName, email, hashPassword, userRole);
         if (!user) {
@@ -19,8 +30,7 @@ exports.signup = async (req, res) => {
             })
         }
         else {
-            const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: "24h" })
-            return res.json({ status: "success", data: user, token })
+            return res.json({ status: "success", data: user })
         }
 
     } catch (error) {
@@ -42,10 +52,19 @@ exports.login = async (req, res) => {
 
     try {
         const user = await usermodel.login(email, password)
-        if (user && (await bcrypt.compare(password, user.password))) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+
+            res.status(400).json({
+                statusCode: 400,
+                message: "Invalid Credentials"
+            });
+
+        } else {
+
             const payload = {
                 user: {
                     id: user.id,
+                    role: user.userRole
                 }
             }
             jwt.sign(payload, SECRET_KEY, { expiresIn: "24h" }, (err, token) => {
@@ -65,11 +84,6 @@ exports.login = async (req, res) => {
                     token
                 })
             })
-        } else {
-            res.status(400).json({
-                statusCode: 400,
-                message: "Invalid Credentials"
-            });
         }
 
     } catch (error) {
@@ -77,3 +91,54 @@ exports.login = async (req, res) => {
     }
 }
 
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await usermodel.find().select("-password");
+
+        res.json({
+            statusCode: 200,
+            message: "Users gotten successfully",
+            users
+        })
+    } catch (error) {
+        res.status(500).send("Server error")
+    }
+}
+
+exports.changeRole = async (req, res) => {
+    try {
+        const { email, userRole, isAdmin, isStaff, isManager } = req.body
+
+        const user = await usermodel.findOneAndUpdate({ email }, { userRole, isAdmin, isStaff, isManager })
+
+        if (!user) {
+            res.status(400).json({
+                statusCode: 400,
+                message: "Invalid Credentials"
+            });
+
+        }
+        else {
+            res.json({
+                statusCode: 200,
+                message: "user role changed successfully",
+                user
+            })
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).send("Server error")
+
+    }
+}
+
+exports.deleteUser = async (req, res) => {
+
+    try {
+        const user = usermodel.deleteOne({ _id: id })
+        return user
+    } catch (error) {
+        res.status(500).send("Server error")
+
+    }
+}

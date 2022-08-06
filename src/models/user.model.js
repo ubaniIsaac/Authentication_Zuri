@@ -25,7 +25,7 @@ const UserSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        UserRole: {
+        userRole: {
             type: String,
             enum: ["admin", "staff", "manager", "user"],
             default: "user"
@@ -48,9 +48,7 @@ const UserSchema = new mongoose.Schema(
     })
 
 UserSchema.statics.signup = async function (
-    email,
-    password,
-    type
+    firstName, lastName, email, password, userRole
 ) {
     try {
         const user = await this.create({ firstName, lastName, email, password, userRole })
@@ -68,36 +66,7 @@ UserSchema.statics.login = async function (
         const user = await this.findOne({
             email
         });
-        if (!user) throw ({ error: 'Invalid credentials' })
         return user;
-    } catch (error) {
-        throw error;
-    }
-}
-
-UserSchema.statics.getUserById = async function (id) {
-    try {
-        const user = await this.findOne({ _id: id });
-        if (!user) throw ({ error: 'No user with this id found' })
-        return user;
-    } catch (error) {
-        throw error;
-    }
-}
-
-UserSchema.statics.getAllUsers = async function () {
-    try {
-        const users = await this.find()
-        return users;
-    } catch (error) {
-        throw error;
-    }
-}
-
-UserSchema.statics.deleteUserById = async function (id) {
-    try {
-        const result = await this.deleteOne({ _id: id });
-        return result
     } catch (error) {
         throw error;
     }
