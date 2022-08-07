@@ -3,7 +3,7 @@
 Authentication system built with node and Json Web Tokens
 Users can signup, login and logout.
 There are 4 user roles; Manager. Admin, Staff and User. Each role has an individual route,
-I also added specific functions like the ability to see all users to the manager and the ability to delete a user account to admin.
+I also added specific functions like the ability to see all users and change the role of a specific user to the manager and the ability to delete a user account to admin.
 
 Password recovery feature included. Node API sends a mail using nodemailer to the user account email. The mail contains the link containing the user ID and a token automatically generated to reset the password
 
