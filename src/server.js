@@ -15,7 +15,7 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Authorization Application' })
+    res.json({ message: 'Authorization Application Homepage' })
 });
 
 require('./routes/users/user.router')(app);

@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-
+require("dotenv").config()
 
 
 const sendEmail = async (email, subject, text) => {
@@ -31,3 +31,6 @@ const sendEmail = async (email, subject, text) => {
         console.log(error, "email not sent");
     }
 };
+
+
+module.exports = sendEmail;
